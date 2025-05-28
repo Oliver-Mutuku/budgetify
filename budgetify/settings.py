@@ -47,7 +47,7 @@ INSTALLED_APPS = [
 
     # custom apps
     'apps.users',
-    'apps.expenses',
+    'apps.ledger',
     
 ]
 
