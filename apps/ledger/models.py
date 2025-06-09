@@ -14,10 +14,16 @@ class Category(models.Model):
         return self.name
     
 class Expense(models.Model):
+    BUDGET_TYPE_CHOICES = [
+        ('need', 'Need'),
+        ('want', 'Want'),
+        ('savings', 'Savings/Investment'),
+    ]
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='expenses')
     title = models.CharField(max_length=255)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
+    budget_type = models.CharField(max_length=10, choices=BUDGET_TYPE_CHOICES, default='need')
     description = models.TextField(blank=True)
     date = models.DateField() # for filtering purposes
     created_at = models.DateTimeField(auto_now_add=True)
