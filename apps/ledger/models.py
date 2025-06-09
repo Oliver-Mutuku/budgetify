@@ -54,7 +54,7 @@ class Income(models.Model):
 class BudgetType(models.Model):
     slug = models.SlugField(primary_key=True, unique=True, max_length=50, blank=True)
     name = models.CharField(max_length=50)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, related_name='budget_types')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='budget_types')
     description = models.TextField(blank=True)
 
 
