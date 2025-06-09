@@ -25,6 +25,7 @@ class Expense(models.Model):
 
     class Meta:
         ordering = ['-date']
+        db_table = 'expense'
 
     def __str__(self):
         return f"{self.title} - ksh{self.amount} on {self.date}"
@@ -41,6 +42,7 @@ class Income(models.Model):
 
     class Meta:
         ordering = ['-date']
+        db_table = 'income'
 
     def __str__(self):
         return f"{self.source} - ksh{self.amount} on {self.date}"
