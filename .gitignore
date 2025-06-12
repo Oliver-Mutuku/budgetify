@@ -2,3 +2,7 @@ venv
 .env
 budget_venv
 .idea
+
+# Ignore compiled files
+*.pyc
+__pycache__/
