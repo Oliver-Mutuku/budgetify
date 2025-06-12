@@ -18,7 +18,7 @@ def create_default_categories(apps, schema_editor):
     ]
 
     for name in defaults:
-        Category.objects.get_or_create(name=name, defaults={'slug', slugify(name)})
+        Category.objects.get_or_create(name=name, defaults={'slug': slugify(name)})
 
 
 class Migration(migrations.Migration):

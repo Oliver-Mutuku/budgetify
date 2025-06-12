@@ -14,8 +14,8 @@ def create_default_budget_types(apps, schema_editor):
         'Investment',
     ]
 
-    for budget_type in defaults:
-        BudgetType.objects.get_or_create(budget_type=budget_type, defaults={'slug', slugify(budget_type)})
+    for name in defaults:
+        BudgetType.objects.get_or_create(name=name, defaults={'slug': slugify(name), 'user_id': 1})
 
 
 class Migration(migrations.Migration):

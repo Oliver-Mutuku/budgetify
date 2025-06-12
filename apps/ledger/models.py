@@ -20,7 +20,7 @@ class Category(models.Model):
 
 
     def __str__(self):
-        return self.name
+        return self.slug
 
 
 class Expense(models.Model):
