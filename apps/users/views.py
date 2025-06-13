@@ -48,7 +48,6 @@ class UserAuthentication(ListCreateAPIView):
         payload = {"id": str(user.id)}
 
         if not remember_me:
-            print("not remembered")
             payload["exp"] = datetime.utcnow() + timedelta(hours=1)
 
         token = jwt.encode(payload, settings.SECRET_KEY, algorithm="HS256")

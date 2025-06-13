@@ -6,8 +6,8 @@ from .models import Category, Expense, Income, BudgetType
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ['id', 'slug', 'name']
-        read_only_fields = ['id', 'slug']
+        fields = ['id', 'slug', 'name', "is_default"]
+        read_only_fields = ['id', 'slug', "is_default"]
 
     def validate_name(self, value):
         """

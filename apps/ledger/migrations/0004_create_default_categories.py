@@ -8,23 +8,18 @@ def create_default_categories(apps, schema_editor):
     Category = apps.get_model("ledger", "Category")
 
     defaults = [
-        "rent",
-        "Leisure",
-        "Electronics",
-        "Utilities",
-        "Clothing",
-        "Health",
+        "General",
         "Others",
     ]
 
     for name in defaults:
-        Category.objects.get_or_create(name=name, defaults={'slug': slugify(name)})
+        Category.objects.get_or_create(name=name, defaults={'slug': slugify(name), "is_default": True})
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ledger', '0001_initial'),
+        ('ledger', '0003_alter_category_options_category_created_at_and_more'),
     ]
 
     operations = [
