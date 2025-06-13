@@ -6,11 +6,16 @@ from django.utils.text import slugify # to turn any string into a slugified stri
 class Category(models.Model):
     slug = models.SlugField(unique=True, blank=True, max_length=50)
     name = models.CharField(max_length=50, unique=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
+    is_default = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'category'
         verbose_name = 'category'
         verbose_name_plural = 'categories'
+        ordering = ['-created_at']
 
 
     def save(self, *args, **kwargs):
@@ -62,13 +67,16 @@ class Income(models.Model):
 class BudgetType(models.Model):
     slug = models.SlugField(unique=True, max_length=50, blank=True)
     name = models.CharField(max_length=50)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='budget_types')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='budget_types', blank=True, null=True)
     description = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         unique_together = ('user', 'name')
         verbose_name = 'budget type'
         verbose_name_plural = 'budget types'
+        ordering = ['-created_at']
 
     def save(self, *args, **kwargs):
         if not self.slug:
