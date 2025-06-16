@@ -5,7 +5,7 @@ from django.utils.text import slugify # to turn any string into a slugified stri
 
 class Category(models.Model):
     slug = models.SlugField(unique=True, blank=True, max_length=50)
-    name = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=50)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
     is_default = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
