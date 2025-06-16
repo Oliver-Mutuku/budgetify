@@ -24,7 +24,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
         if queryset.exists():
             raise serializers.ValidationError(
-                "A category with a similar name already exists for this user."
+                "You've already created a category with a similar name."
             )
         return value
 
@@ -97,7 +97,7 @@ class BudgetTypeSerializer(serializers.ModelSerializer):
             queryset = queryset.exclude(id=instance.id)
         if queryset.exists():
             raise serializers.ValidationError(
-                "A budget type with a similar name already exists for this user."
+                "You've already created a type with a similar name."
             )
         return value
 
