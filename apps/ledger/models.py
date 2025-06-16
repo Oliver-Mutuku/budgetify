@@ -12,6 +12,7 @@ class Category(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
+        unique_together = ('user', 'slug')
         db_table = 'category'
         verbose_name = 'category'
         verbose_name_plural = 'categories'
@@ -73,7 +74,7 @@ class BudgetType(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ('user', 'name')
+        unique_together = ('user', 'slug')
         verbose_name = 'budget type'
         verbose_name_plural = 'budget types'
         ordering = ['-created_at']
