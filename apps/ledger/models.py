@@ -1,35 +1,27 @@
+import uuid
 from django.db import models
 from django.conf import settings
-from django.utils.text import slugify # to turn any string into a slugified string
 
 
 class Category(models.Model):
-    slug = models.SlugField(unique=True, blank=True, max_length=50)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=50)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
-    is_default = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ('user', 'slug')
         db_table = 'category'
         verbose_name = 'category'
         verbose_name_plural = 'categories'
         ordering = ['-created_at']
 
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
-
-
     def __str__(self):
-        return self.slug
+        return self.name
 
 
 class Expense(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='expenses')
     title = models.CharField(max_length=255)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
@@ -49,6 +41,7 @@ class Expense(models.Model):
     
 
 class Income(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="incomes")
     source = models.CharField(max_length=255)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
@@ -66,7 +59,7 @@ class Income(models.Model):
 
 
 class BudgetType(models.Model):
-    slug = models.SlugField(unique=True, max_length=50, blank=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=50)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='budget_types', blank=True, null=True)
     description = models.TextField(blank=True)
@@ -74,17 +67,11 @@ class BudgetType(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ('user', 'slug')
         verbose_name = 'budget type'
         verbose_name_plural = 'budget types'
         ordering = ['-created_at']
 
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
-
     def __str__(self):
-        return f"{self.name} ({self.slug})"
+        return self.name
 
 

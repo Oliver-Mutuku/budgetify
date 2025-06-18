@@ -1,67 +1,31 @@
 from rest_framework import serializers
-from django.utils.text import slugify
 from .models import Category, Expense, Income, BudgetType
 
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ['id', 'slug', 'name', 'is_default']
-        read_only_fields = ['id', 'slug', 'is_default']
-
-    def validate_name(self, value):
-        """
-        Validate that the name does not cause a slug collision for this user.
-        """
-        request = self.context.get("request")
-        user = request.user if request else None
-        base_slug = slugify(value)
-        instance = self.instance
-
-        queryset = Category.objects.filter(slug=base_slug, user=user)
-        if instance:
-            queryset = queryset.exclude(id=instance.id)
-
-        if queryset.exists():
-            raise serializers.ValidationError(
-                "You've already created a category with a similar name."
-            )
-        return value
+        fields = "__all__"
 
     def create(self, validated_data):
-        user = self.context['request'].user
-        name = validated_data['name']
-        slug = slugify(name)
-
-        validated_data['slug'] = slug
-        validated_data['user'] = user
+        validated_data['user'] = self.context['request'].user
         return super().create(validated_data)
 
-    def update(self, instance, validated_data):
-        """
-        Update the category and regenerate the slug if the name changes.
-        """
-        name = validated_data.get('name', instance.name)
-        instance.slug = slugify(name)
+    def validate(self, attrs):
+        user = self.context['request'].user
+        name = attrs.get('name')
 
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-
-        instance.save()
-        return instance
-
-    def update(self, instance, validated_data):
-        """
-        update the category, regenerating the slug, if the category name changes
-        """
-        name = validated_data.get('name', instance.name)
-        instance.slug = slugify(name)
-
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-
-        instance.save()
-        return instance
+        if self.instance is None:
+            if Category.objects.filter(name=name, user=user).exists():
+                raise serializers.ValidationError({
+                    "name": "You already have a category with this name."
+                })
+        else:
+            if Category.objects.filter(name=name, user=user).exclude(id=self.instance.id).exists():
+                raise serializers.ValidationError({
+                    "name": "You already have a category with this name."
+                })
+        return attrs
 
 
 class ExpenseSerializer(serializers.ModelSerializer):
@@ -80,43 +44,3 @@ class BudgetTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = BudgetType
         fields = "__all__"
-        read_only_fields = ("slug", "user")
-
-    def validate_name(self, value):
-        """
-        Ensure that the slug generated from name is unique per user.
-        """
-        request = self.context.get("request")
-        user = request.user if request else None
-        base_slug = slugify(value)
-        instance = self.instance
-
-        # Check if another BudgetType with the same slug exists for this user
-        queryset = BudgetType.objects.filter(slug=base_slug, user=user)
-        if instance:
-            queryset = queryset.exclude(id=instance.id)
-        if queryset.exists():
-            raise serializers.ValidationError(
-                "You've already created a type with a similar name."
-            )
-        return value
-
-    def create(self, validated_data):
-        user = self.context['request'].user
-        name = validated_data['name']
-        slug = slugify(name)
-
-        validated_data['slug'] = slug
-        validated_data['user'] = user
-        return super().create(validated_data)
-
-    def update(self, instance, validated_data):
-        name = validated_data.get("name", instance.name)
-        instance.slug = slugify(name)
-
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-
-        instance.save()
-        return instance
-
