@@ -7,10 +7,6 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = "__all__"
 
-    def create(self, validated_data):
-        validated_data['user'] = self.context['request'].user
-        return super().create(validated_data)
-
     def validate(self, attrs):
         user = self.context['request'].user
         name = attrs.get('name')
@@ -26,6 +22,11 @@ class CategorySerializer(serializers.ModelSerializer):
                     "name": "You already have a category with this name."
                 })
         return attrs
+
+    def create(self, validated_data):
+        validated_data['user'] = self.context['request'].user
+        return super().create(validated_data)
+
 
 
 class ExpenseSerializer(serializers.ModelSerializer):
@@ -44,3 +45,23 @@ class BudgetTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = BudgetType
         fields = "__all__"
+
+    def validate(self, attrs):
+        user = self.context['request'].user
+        name = attrs.get('name')
+
+        if self.instance is None:
+            if Category.objects.filter(name=name, user=user).exists():
+                raise serializers.ValidationError({
+                    "name": "You already have a budget type with this name."
+                })
+        else:
+            if Category.objects.filter(name=name, user=user).exclude(id=self.instance.id).exists():
+                raise serializers.ValidationError({
+                    "name": "You already have a budget type with this name."
+                })
+        return attrs
+
+    def create(self, validated_data):
+        validated_data['user'] = self.context['request'].user
+        return super().create(validated_data)
