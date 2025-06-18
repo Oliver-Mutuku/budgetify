@@ -3,6 +3,9 @@ venv
 budget_venv
 .idea
 
-# Ignore compiled files
-*.pyc
+# Ignore Python cache
 __pycache__/
+*.pyc
+
+# Ignore Django migrations
+**/migrations/*.py
