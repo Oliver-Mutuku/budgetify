@@ -25,6 +25,7 @@ class Expense(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=255)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
+    date_of_expense = models.DateField()
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     budget_type = models.ForeignKey('BudgetType', on_delete=models.SET_NULL, null=True)
     description = models.TextField(blank=True)
@@ -36,7 +37,7 @@ class Expense(models.Model):
         db_table = 'expense'
 
     def __str__(self):
-        return f"{self.title} - ksh{self.amount} on {self.date}"
+        return f"{self.title} - ksh{self.amount} on {self.date_of_expense}"
     
 
 class Income(models.Model):
@@ -44,6 +45,7 @@ class Income(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
     source = models.CharField(max_length=255)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
+    date_of_income = models.DateField()
     description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -53,7 +55,7 @@ class Income(models.Model):
         db_table = 'income'
 
     def __str__(self):
-        return f"{self.source} - ksh{self.amount} on {self.created_at}"
+        return f"{self.source} - ksh{self.amount} on {self.date_of_income}"
 
 
 class BudgetType(models.Model):
