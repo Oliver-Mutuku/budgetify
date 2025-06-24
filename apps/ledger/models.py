@@ -1,6 +1,7 @@
 import uuid
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
 
 
 class Category(models.Model):
@@ -25,7 +26,7 @@ class Expense(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=255)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    date_of_expense = models.DateField()
+    date_of_expense = models.DateField(default=timezone.now)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     budget_type = models.ForeignKey('BudgetType', on_delete=models.SET_NULL, null=True)
     description = models.TextField(blank=True)
@@ -45,7 +46,7 @@ class Income(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
     source = models.CharField(max_length=255)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    date_of_income = models.DateField()
+    date_of_income = models.DateField(default=timezone.now)
     description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
