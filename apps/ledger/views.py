@@ -4,7 +4,7 @@ from .serializers import CategorySerializer, BudgetTypeSerializer, IncomeSeriali
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from .models import Category, BudgetType, Income, Expense
 from ..utils.token import JWTAuthentication
-from .filters import ExpenseFilter
+from .filters import ExpenseFilter, IncomeFilter
 
 
 class TypesViewSet(viewsets.ModelViewSet):
@@ -35,6 +35,9 @@ class IncomeViewSet(viewsets.ModelViewSet):
     serializer_class = IncomeSerializer
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = IncomeFilter
 
     def get_queryset(self):
         return Income.objects.filter(user=self.request.user)
